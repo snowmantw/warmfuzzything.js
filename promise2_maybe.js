@@ -70,10 +70,19 @@
       var mSelf = {
         is2: true,
         returns: (newPromise2MaybeValue) => {
+          console.log(newPromise2MaybeValue);
           // Get Promise Maybe value since user would only use
           // this type as the interface, not the original Maybe.
           // So we need to unwrap it to get thr real Maybe value.
-          var newMaybeValue = newPromise2MaybeValue.MaybeValue;
+
+          // XXX: No way to use instantiated MaybeValue from the 'Just' method:
+          // it would block the next steps.
+          //var newMaybeValue = newPromise2MaybeValue.MaybeValue;
+          var newMaybeValue = {
+            Just: newPromise2MaybeValue.MaybeValue.Just,
+            Nothing: newPromise2MaybeValue.MaybeValue.Nothing,
+            value: newPromise2MaybeValue.MaybeValue.value
+          };
           // go to the next step.
           this.MaybeValue = newMaybeValue;
           innerResolve(newMaybeValue);

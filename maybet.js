@@ -9,8 +9,7 @@
     var mMaybeV = this.value;
     mMaybeV.keep((mSelf, value) => {
       var currentMaybeValue = value;
-      var mtReturns = (newMaybeValue) => {
-        var mMaybeValue = mSelf.lift(newMaybeValue);  // Maybe v' -> m Maybe v'
+      var mtReturns = (mMaybeValue) => {
         this.value = mMaybeValue;                     // MaybeT m Maybe v'
         mSelf.returns(mMaybeValue);                   // Go to the next step
       };
@@ -48,24 +47,32 @@
 
 step1 = (mtSelf, value) => {
   console.log('>> 1', value);
-  mtSelf.returns((new PromiseMaybe).Just(value + 99));
+  mtSelf.returns(
+    (new Promise2Maybe).Just(
+      (new PromiseMaybe).Just(value + 99)));
 };
 
 step2 = (mtSelf, value) => {
   setTimeout(() => {
     console.log('>> 2', value);
-    mtSelf.returns((new PromiseMaybe).Just(value - 12));
+    mtSelf.returns(
+      (new Promise2Maybe).Just(
+        (new PromiseMaybe).Just(value - 12)));
   }, 3000);
 };
 
 step3 = (mtSelf, value) => {
   console.log('>> 3', value);
-  mtSelf.returns((new PromiseMaybe).Nothing());
+    mtSelf.returns(
+      (new Promise2Maybe).Just(
+        (new PromiseMaybe).Nothing()));
 };
 
 step4 = (mtSelf, value) => {
   console.log('>> 4', value);
-  mtSelf.returns((new PromiseMaybe).Just(value + 12));
+  mtSelf.returns(
+    (new Promise2Maybe).Just(
+      (new PromiseMaybe).Just(value + 12)));
 };
 
 MaybeV = (new PromiseMaybe).Just(3);

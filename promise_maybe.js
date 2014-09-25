@@ -71,7 +71,15 @@
           // Get Promise Maybe value since user would only use
           // this type as the interface, not the original Maybe.
           // So we need to unwrap it to get thr real Maybe value.
-          var newMaybeValue = newPromiseMaybeValue.MaybeValue;
+
+          // XXX: No way to use instantiated MaybeValue from the 'Just' method:
+          // it would block the next steps.
+          //var newMaybeValue = newPromiseMaybeValue.MaybeValue;
+          var newMaybeValue = {
+            Just: newPromiseMaybeValue.MaybeValue.Just,
+            Nothing: newPromiseMaybeValue.MaybeValue.Nothing,
+            value: newPromiseMaybeValue.MaybeValue.value
+          };
           // go to the next step.
           this.MaybeValue = newMaybeValue;
           innerResolve(newMaybeValue);
@@ -101,7 +109,7 @@
 
   // We have too much 'return', so don't name it as in Haskell.
   PromiseMaybe.prototype.lift = function(value) {
-    var wrapped = (new Promise2Maybe).Just(value);
+    var wrapped = (new PromiseMaybe).Just(value);
     // XXX: No way to use instantiated MaybeValue from the 'Just' method:
     // it would block the next steps.
     wrapped.MaybeValue = {
@@ -121,7 +129,6 @@
 })(window);
 
 
-/*
 g = (new PromiseMaybe()).Just(3)
   .then((mSelf, v) => {
     console.log('>> 1');
@@ -141,4 +148,3 @@ g = (new PromiseMaybe()).Just(3)
     console.log('>> 4');
     mSelf.returns((new PromiseMaybe).Just(v+12));
   });
-*/
